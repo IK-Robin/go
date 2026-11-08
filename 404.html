@@ -3,79 +3,81 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Redirect</title>
 <style>
-html,body {
-  margin:0;
-  padding:0;
-  background:#fff;
-}
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+  }
 </style>
 </head>
 <body>
+
 <script type="module">
-import {initializeApp} from
-"https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+import { initializeApp } from
+  "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
 
-import {
-  getFirestore,doc,getDoc
-} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc } from
+  "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-import {firebaseConfig} from "./firebase-config.js";
-
-const app=initializeApp(firebaseConfig);
-const db=getFirestore(app);
+import { firebaseConfig } from "/go/firebase-config.js";
 
 async function redirect() {
-  const marker="/go/s/";
-  const path=window.location.pathname;
-
-  if(!path.startsWith(marker)) {
-    window.location.replace("/go/");
-    return;
-  }
-
-  let alias;
   try {
-    alias=decodeURIComponent(
-      path.slice(marker.length).replace(/\/$/,"")
+    const prefix = "/go/s/";
+    const pathname = window.location.pathname;
+
+    if (!pathname.startsWith(prefix)) {
+      throw new Error("Invalid short-link path");
+    }
+
+    const alias = decodeURIComponent(
+      pathname.slice(prefix.length).replace(/\/$/, "")
     );
-  } catch {
-    window.location.replace("/go/");
-    return;
-  }
 
-  if(!/^[A-Za-z0-9_-]{1,60}$/.test(alias)) {
-    window.location.replace("/go/");
-    return;
-  }
-
-  try {
-    const snapshot=await getDoc(doc(db,"links",alias));
-
-    if(!snapshot.exists()) {
-      window.location.replace("/go/");
-      return;
+    if (!/^[a-zA-Z0-9_-]{1,60}$/.test(alias)) {
+      throw new Error("Invalid alias");
     }
 
-    const destination=snapshot.data().url;
-    const url=new URL(destination);
+    console.log("Looking up short link:", alias);
 
-    if(!["https:","http:"].includes(url.protocol)) {
-      throw new Error("Invalid destination");
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    const linkRef = doc(db, "links", alias);
+    const snapshot = await getDoc(linkRef);
+
+    if (!snapshot.exists()) {
+      throw new Error("Short link not found: " + alias);
     }
 
-    window.location.replace(url.href);
+    const data = snapshot.data();
 
-  } catch(error) {
-    console.error("Redirect failed:",error);
-    window.location.replace("/go/");
+    if (!data.url) {
+      throw new Error("Destination URL is missing");
+    }
+
+    const destination = new URL(data.url);
+
+    if (!["http:", "https:"].includes(destination.protocol)) {
+      throw new Error("Invalid destination protocol");
+    }
+
+    console.log("Redirecting to:", destination.href);
+
+    window.location.replace(destination.href);
+
+  } catch (error) {
+    console.error("RobinLinks redirect error:", error);
+    document.title = "Redirect failed";
   }
 }
 
 redirect();
 </script>
+
 </body>
 </html>
