@@ -5,125 +5,173 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0b1220">
-<title>RobinLinks — Free URL Shortener</title>
+<title>RobinLinks — Dashboard</title>
 <style>
-:root {
+:root{
   --bg:#0b1220;--panel:#142036;--border:#293a52;
-  --text:#f3f7ff;--muted:#a1b0c7;--accent:#38bdf8;
+  --text:#f3f7ff;--muted:#a1b0c7;--accent:#38bdf8
 }
 *{box-sizing:border-box}
 body{
   margin:0;background:var(--bg);color:var(--text);
-  font:15px/1.55 system-ui,Arial,sans-serif
+  font:15px/1.5 system-ui,sans-serif
 }
-.container{max-width:1050px;margin:auto;padding:25px 16px}
-header{
+main{max-width:1100px;margin:auto;padding:25px 16px}
+header,.between,.actions{
   display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:15px;margin-bottom:35px
+  gap:12px;flex-wrap:wrap
 }
+header{margin-bottom:30px}
 .logo{font-size:25px;font-weight:800}
 .logo span{color:var(--accent)}
-h1{font-size:clamp(28px,5vw,42px);margin:0 0 8px}
-h2{font-size:20px;margin:0 0 18px}
+h1{font-size:27px;margin:0 0 10px}
+h2{font-size:20px;margin:0 0 17px}
+h3{font-size:16px;margin:0 0 10px}
 p{color:var(--muted)}
 .card{
   background:var(--panel);border:1px solid var(--border);
-  border-radius:16px;padding:24px;margin-bottom:20px
+  border-radius:15px;padding:22px;margin-bottom:20px
 }
-.hero{text-align:center;padding:35px 0}
-.hero p{margin-bottom:24px}
-input{
-  width:100%;background:#0a1526;border:1px solid var(--border);
-  border-radius:9px;padding:13px;color:white;font:inherit;min-width:0
+.stats{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  gap:13px;margin-bottom:20px
 }
-input:focus{outline:2px solid var(--accent)}
-label{display:block;font-weight:600;margin-bottom:7px}
-.field{margin-bottom:18px}
+.stat{
+  background:var(--panel);border:1px solid var(--border);
+  border-radius:12px;padding:20px
+}
+.stat strong{font-size:27px;display:block}
+.stat span{color:var(--muted);font-size:12px}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.field{margin-bottom:17px}
+label{display:block;font-weight:600;margin-bottom:7px}
+input{
+  width:100%;padding:12px;border:1px solid var(--border);
+  border-radius:9px;background:#0b1526;color:white;
+  font:inherit;min-width:0
+}
+input[type=checkbox]{width:auto;accent-color:var(--accent)}
+input:focus{outline:2px solid var(--accent)}
 button{
-  border:0;border-radius:9px;padding:12px 17px;
-  cursor:pointer;font:inherit;font-weight:650
+  border:0;border-radius:9px;padding:11px 15px;
+  font:inherit;font-weight:650;cursor:pointer
 }
 button:disabled{opacity:.5;cursor:not-allowed}
-.primary{background:var(--accent);color:#061321}
+.primary{background:var(--accent);color:#071421}
 .secondary{background:#293b55;color:white}
-.danger{background:#572a3b;color:#ffd1dc}
-.google{
-  background:white;color:#202124;
-  display:inline-flex;align-items:center;gap:12px
-}
-.actions{display:flex;gap:9px;flex-wrap:wrap}
+.danger{background:#542737;color:#ffd1dc}
+.google{background:white;color:#202124}
+.actions{justify-content:flex-start}
 .hidden{display:none!important}
-.account{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.avatar{width:36px;height:36px;border-radius:50%}
-.user-name{font-size:13px;color:var(--muted)}
+.muted,.small{color:var(--muted)}
+.small{font-size:12px}
 .link-row{
-  padding:17px 0;border-bottom:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;
-  gap:16px;flex-wrap:wrap
+  padding:18px 0;border-bottom:1px solid var(--border)
 }
 .link-row:last-child{border-bottom:0}
-.link-info{flex:1;min-width:200px;overflow-wrap:anywhere}
-.link-info a{color:var(--accent);font-weight:700}
-.original{font-size:12px;color:var(--muted);margin-top:5px}
-.notice{margin-top:15px;color:#86efac;overflow-wrap:anywhere}
-.notice.error{color:#fda4af}
-footer{text-align:center;color:var(--muted);padding:25px}
-@media(max-width:650px){
+.link-row a{color:var(--accent);overflow-wrap:anywhere}
+.url{font-size:12px;color:var(--muted);overflow-wrap:anywhere}
+.notice{padding:12px 0;color:#86efac;overflow-wrap:anywhere}
+.error{color:#fda4af}
+.bar-chart{
+  display:flex;align-items:flex-end;gap:8px;
+  height:170px;padding-top:15px
+}
+.bar-col{
+  flex:1;height:100%;display:flex;flex-direction:column;
+  align-items:center;justify-content:flex-end;gap:6px
+}
+.bar{
+  width:100%;max-width:45px;background:var(--accent);
+  border-radius:5px 5px 0 0;min-height:2px
+}
+.bar-col span{font-size:10px;color:var(--muted)}
+.table{width:100%;border-collapse:collapse}
+.table td,.table th{
+  padding:10px;text-align:left;border-bottom:1px solid var(--border)
+}
+.qr-box{text-align:center;padding:15px}
+#qrCanvas{background:white;padding:12px;max-width:100%}
+.avatar{width:34px;height:34px;border-radius:50%}
+@media(max-width:750px){
+  .stats{grid-template-columns:repeat(2,1fr)}
   .grid{grid-template-columns:1fr;gap:0}
-  .card{padding:17px}
-  .hero{padding:15px 0}
+  .card{padding:16px}
 }
 </style>
 </head>
 <body>
-<div class="container">
+<main>
 <header>
   <div class="logo">Robin<span>Links.</span></div>
-  <div id="account" class="account hidden">
+  <div id="account" class="actions hidden">
     <img id="avatar" class="avatar" alt="" hidden>
-    <span id="userName" class="user-name"></span>
-    <button id="logoutBtn" class="secondary">Sign Out</button>
+    <span id="userName" class="small"></span>
+    <button id="logout" class="secondary">Sign Out</button>
   </div>
 </header>
 
-<section id="welcome" class="hero">
-  <h1>Shorten your links, instantly.</h1>
-  <p>Create free custom short links with your Google account.</p>
-  <button id="googleBtn" class="google">
-    <svg width="20" height="20" viewBox="0 0 48 48">
-      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.25 5.48-4.76 7.18l7.73 6C44.42 38.03 46.98 31.9 46.98 24.55z"/>
-      <path fill="#FBBC05" d="M10.53 28.59A14.4 14.4 0 0 1 9.75 24c0-1.59.27-3.13.76-4.59l-7.98-6.2A23.9 23.9 0 0 0 0 24c0 3.87.93 7.52 2.56 10.78l7.97-6.19z"/>
-      <path fill="#34A853" d="M24 48c6.48 0 11.92-2.13 15.89-5.8l-7.73-6C30.02 37.65 27.3 38.5 24 38.5c-6.26 0-11.57-4.22-13.47-9.91l-7.97 6.19C6.51 42.62 14.62 48 24 48z"/>
-    </svg>
-    Continue with Google
-  </button>
+<section id="welcome" class="card">
+  <h1>Free Custom URL Shortener</h1>
+  <p>Sign in with Google to create and track your short links.</p>
+  <button id="login" class="google">Continue with Google</button>
 </section>
 
 <div id="dashboard" class="hidden">
+  <div class="stats">
+    <div class="stat"><strong id="totalLinks">0</strong><span>Total Links</span></div>
+    <div class="stat"><strong id="totalClicks">0</strong><span>Total Clicks</span></div>
+    <div class="stat"><strong id="todayClicks">0</strong><span>Clicks Today (UTC)</span></div>
+    <div class="stat"><strong id="activeLinks">0</strong><span>Active Links</span></div>
+  </div>
+
   <section class="card">
     <h2 id="formHeading">Create Short Link</h2>
     <form id="linkForm">
       <div class="field">
         <label for="destination">Destination URL</label>
         <input id="destination" type="url"
-          placeholder="https://example.com/your-page"
-          maxlength="4096" required>
+          maxlength="4096" placeholder="https://example.com"
+          required>
+        <div id="preview" class="small"></div>
+        <div id="duplicate" class="small"></div>
       </div>
+
       <div class="grid">
         <div class="field">
           <label for="alias">Custom alias</label>
-          <input id="alias" placeholder="my-link"
-            pattern="[A-Za-z0-9_-]{1,60}"
-            maxlength="60" required>
+          <input id="alias" pattern="[A-Za-z0-9_-]{1,60}"
+            maxlength="60" placeholder="rvai" required>
         </div>
         <div class="field">
-          <label for="linkTitle">Link title</label>
-          <input id="linkTitle" placeholder="My Website"
-            maxlength="100">
+          <label for="linkTitle">Title</label>
+          <input id="linkTitle" maxlength="100"
+            placeholder="RV AI Demo">
         </div>
       </div>
+
+      <div class="grid">
+        <div class="field">
+          <label for="expires">Expiration date (optional)</label>
+          <input id="expires" type="datetime-local">
+        </div>
+        <div class="field">
+          <label for="password">Link password (optional)</label>
+          <input id="password" type="password"
+            minlength="8" maxlength="128"
+            placeholder="At least 8 characters">
+          <div class="small">Leave blank while editing to keep the existing password.</div>
+        </div>
+      </div>
+
+      <div class="field">
+        <label><input id="enabled" type="checkbox" checked> Link enabled</label>
+        <label id="removePasswordWrap" class="hidden">
+          <input id="removePassword" type="checkbox">
+          Remove existing password
+        </label>
+      </div>
+
       <div class="actions">
         <button id="saveBtn" class="primary">Create Link</button>
         <button id="cancelBtn" type="button"
@@ -133,18 +181,59 @@ footer{text-align:center;color:var(--muted);padding:25px}
   </section>
 
   <section class="card">
-    <h2>My Short Links <span id="linkCount"></span></h2>
+    <h2>My Short Links</h2>
     <div class="field">
-      <input id="search" type="search"
-        placeholder="Search your links...">
+      <input id="search" type="search" placeholder="Search links...">
     </div>
     <div id="linkList"></div>
+  </section>
+
+  <section id="analyticsPanel" class="card hidden">
+    <div class="between">
+      <h2 id="analyticsHeading">Link Analytics</h2>
+      <button id="closeAnalytics" class="secondary">Close</button>
+    </div>
+    <div class="stats">
+      <div class="stat">
+        <strong id="selectedClicks">0</strong>
+        <span>Total Clicks</span>
+      </div>
+      <div class="stat">
+        <strong id="selectedToday">0</strong>
+        <span>Today (UTC)</span>
+      </div>
+    </div>
+    <h3>Last 7 Days (UTC)</h3>
+    <div id="chart" class="bar-chart"></div>
+    <div class="grid">
+      <div>
+        <h3>Countries</h3>
+        <div id="countries"></div>
+      </div>
+      <div>
+        <h3>Devices</h3>
+        <div id="devices"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="qrPanel" class="card hidden">
+    <div class="between">
+      <h2>QR Code</h2>
+      <button id="closeQR" class="secondary">Close</button>
+    </div>
+    <div class="qr-box">
+      <canvas id="qrCanvas"></canvas>
+      <p id="qrUrl" class="small"></p>
+      <button id="downloadQR" class="primary">Download PNG</button>
+    </div>
   </section>
 </div>
 
 <p id="notice" class="notice" role="status"></p>
-<footer>RobinLinks — Powered by Firebase</footer>
-</div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode/1.5.3/qrcode.min.js"></script>
 
 <script type="module">
 import {initializeApp} from
@@ -158,78 +247,116 @@ import {
 
 import {
   getFirestore,collection,doc,query,where,getDocs,
-  setDoc,updateDoc,deleteDoc,serverTimestamp
+  deleteDoc
 } from
 "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
 import {firebaseConfig} from "./firebase-config.js";
 
+const FUNCTION_BASE =
+"https://asia-southeast1-YOUR_PROJECT_ID.cloudfunctions.net";
+
+const SHORT_BASE="https://ik-robin.github.io/go/s/";
+
 const app=initializeApp(firebaseConfig);
 const auth=getAuth(app);
 const db=getFirestore(app);
 const provider=new GoogleAuthProvider();
-
 const $=id=>document.getElementById(id);
-const BASE="https://ik-robin.github.io/go/s/";
 
-let currentUser=null;
+let user=null;
 let records=[];
 let editing=null;
+let qrAlias=null;
 
-function notice(message,error=false){
-  $("notice").textContent=message;
+function notice(text,error=false){
+  $("notice").textContent=text;
   $("notice").classList.toggle("error",error);
 }
 
 function validUrl(value){
   try{
     const u=new URL(value);
-    return u.protocol==="https:"||u.protocol==="http:";
+    return ["http:","https:"].includes(u.protocol);
   }catch{return false}
+}
+
+function shortUrl(alias){
+  return SHORT_BASE+encodeURIComponent(alias);
+}
+
+function toDate(value){
+  if(!value)return null;
+  if(typeof value.toDate==="function")return value.toDate();
+  const d=new Date(value);
+  return Number.isFinite(d.getTime())?d:null;
+}
+
+function dateInput(value){
+  const d=toDate(value);
+  if(!d)return "";
+  const local=new Date(d.getTime()-d.getTimezoneOffset()*60000);
+  return local.toISOString().slice(0,16);
+}
+
+function isActive(record){
+  if(record.enabled===false)return false;
+  const expiry=toDate(record.expiresAt);
+  return !expiry||expiry.getTime()>Date.now();
+}
+
+async function callFunction(name,payload){
+  const token=await user.getIdToken();
+  const response=await fetch(FUNCTION_BASE+"/"+name,{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",
+      "Authorization":"Bearer "+token
+    },
+    body:JSON.stringify(payload)
+  });
+
+  const data=await response.json();
+  if(!response.ok)throw Error(data.error||"Request failed");
+  return data;
 }
 
 function resetForm(){
   editing=null;
   $("linkForm").reset();
+  $("enabled").checked=true;
   $("alias").disabled=false;
   $("formHeading").textContent="Create Short Link";
   $("saveBtn").textContent="Create Link";
   $("cancelBtn").classList.add("hidden");
+  $("removePasswordWrap").classList.add("hidden");
+  $("removePassword").checked=false;
+  $("preview").textContent="";
+  $("duplicate").textContent="";
 }
 
-$("googleBtn").onclick=async()=>{
+$("login").onclick=async()=>{
   try{
     await signInWithPopup(auth,provider);
-  }catch(e){
-    notice("Google login failed: "+e.message,true);
-  }
+  }catch(e){notice(e.message,true)}
 };
 
-$("logoutBtn").onclick=async()=>{
-  try{
-    await signOut(auth);
-  }catch(e){
-    notice(e.message,true);
-  }
-};
+$("logout").onclick=()=>signOut(auth);
+$("cancelBtn").onclick=resetForm;
 
-onAuthStateChanged(auth,async user=>{
-  currentUser=user;
+onAuthStateChanged(auth,async current=>{
+  user=current;
   records=[];
   resetForm();
 
-  $("welcome").classList.toggle("hidden",!!user);
-  $("dashboard").classList.toggle("hidden",!user);
-  $("account").classList.toggle("hidden",!user);
+  $("welcome").classList.toggle("hidden",!!current);
+  $("dashboard").classList.toggle("hidden",!current);
+  $("account").classList.toggle("hidden",!current);
 
-  if(user){
-    $("userName").textContent=user.displayName||user.email||"User";
-    if(user.photoURL){
-      $("avatar").src=user.photoURL;
-      $("avatar").hidden=false;
-    }else{
-      $("avatar").hidden=true;
-    }
+  if(current){
+    $("userName").textContent=current.displayName||current.email;
+    $("avatar").hidden=!current.photoURL;
+    if(current.photoURL)$("avatar").src=current.photoURL;
     await loadLinks();
   }else{
     $("linkList").replaceChildren();
@@ -238,178 +365,331 @@ onAuthStateChanged(auth,async user=>{
 });
 
 async function loadLinks(){
-  if(!currentUser)return;
+  if(!user)return;
+  const uid=user.uid;
 
-  const uid=currentUser.uid;
   try{
     const q=query(
       collection(db,"links"),
       where("ownerUid","==",uid)
     );
+    const snap=await getDocs(q);
+    if(!user||user.uid!==uid)return;
 
-    const snapshot=await getDocs(q);
-
-    if(!currentUser||currentUser.uid!==uid)return;
-
-    records=snapshot.docs.map(d=>({
-      alias:d.id,...d.data()
-    }));
-
+    records=snap.docs.map(d=>({alias:d.id,...d.data()}));
     records.sort((a,b)=>a.alias.localeCompare(b.alias));
     render();
-  }catch(e){
-    notice("Unable to load links: "+e.message,true);
-  }
+  }catch(e){notice("Load failed: "+e.message,true)}
 }
+
+$("destination").addEventListener("input",()=>{
+  const url=$("destination").value.trim();
+  $("preview").textContent="";
+  $("duplicate").textContent="";
+
+  if(!validUrl(url))return;
+
+  $("preview").textContent="Destination: "+new URL(url).hostname;
+
+  const match=records.find(r=>r.url===url&&r.alias!==editing);
+  if(match){
+    $("duplicate").textContent=
+      "You already created this URL: "+shortUrl(match.alias);
+  }
+});
 
 $("linkForm").onsubmit=async e=>{
   e.preventDefault();
-
-  if(!currentUser){
-    notice("Please sign in first.",true);
-    return;
-  }
+  if(!user)return;
 
   const alias=$("alias").value.trim();
   const url=$("destination").value.trim();
   const title=$("linkTitle").value.trim();
+  const password=$("password").value;
+  const expires=$("expires").value;
 
   if(!/^[A-Za-z0-9_-]{1,60}$/.test(alias)||!validUrl(url)){
-    notice("Enter a valid alias and HTTP/HTTPS URL.",true);
+    notice("Invalid alias or URL",true);
     return;
   }
 
-  const button=$("saveBtn");
-  button.disabled=true;
+  const payload={
+    alias,url,title,
+    enabled:$("enabled").checked,
+    expiresAt:expires?new Date(expires).toISOString():null
+  };
+
+  if(editing){
+    payload.password=password;
+    payload.removePassword=$("removePassword").checked;
+  }else{
+    payload.password=password;
+  }
+
+  $("saveBtn").disabled=true;
 
   try{
-    const ref=doc(db,"links",alias);
-
-    if(editing){
-      await updateDoc(ref,{
-        url,title,updatedAt:serverTimestamp()
-      });
-    }else{
-      // Firestore create rules prevent taking an existing alias.
-      await setDoc(ref,{
-        url,title,
-        ownerUid:currentUser.uid,
-        createdAt:serverTimestamp()
-      });
-    }
-
+    await callFunction(editing?"updateLink":"createLink",payload);
     resetForm();
     await loadLinks();
-    notice("Link saved: "+BASE+alias);
-
-  }catch(error){
-    console.error(error);
-    notice(
-      error.code==="permission-denied"
-      ? "This alias may already be taken, or you do not have permission."
-      : error.message,
-      true
-    );
+    notice("Saved successfully: "+shortUrl(alias));
+  }catch(e){
+    notice(e.message,true);
   }finally{
-    button.disabled=false;
+    $("saveBtn").disabled=false;
   }
 };
 
-function button(label,style,callback){
+function makeButton(label,css,fn){
   const b=document.createElement("button");
   b.type="button";
-  b.className=style;
+  b.className=css;
   b.textContent=label;
-  b.onclick=callback;
+  b.onclick=fn;
   return b;
 }
 
 function render(){
-  const container=$("linkList");
-  container.replaceChildren();
+  const list=$("linkList");
+  list.replaceChildren();
 
-  const search=$("search").value.trim().toLowerCase();
+  const search=$("search").value.toLowerCase();
 
   const filtered=records.filter(r=>
     [r.alias,r.title||"",r.url||""]
     .some(v=>v.toLowerCase().includes(search))
   );
 
-  $("linkCount").textContent="("+records.length+")";
+  const clicks=records.reduce((n,r)=>n+(r.clicks||0),0);
+
+  $("totalLinks").textContent=records.length;
+  $("totalClicks").textContent=clicks.toLocaleString();
+  $("activeLinks").textContent=records.filter(isActive).length;
+
+  // Today's total is calculated from daily documents when available.
+  $("todayClicks").textContent="—";
 
   if(!filtered.length){
     const p=document.createElement("p");
     p.textContent="No links found.";
-    container.append(p);
+    list.append(p);
     return;
   }
 
-  for(const record of filtered){
+  for(const r of filtered){
     const row=document.createElement("div");
     row.className="link-row";
 
+    const head=document.createElement("div");
+    head.className="between";
+
     const info=document.createElement("div");
-    info.className="link-info";
 
     const title=document.createElement("strong");
-    title.textContent=record.title||record.alias;
+    title.textContent=r.title||r.alias;
 
     const link=document.createElement("a");
-    link.href=BASE+record.alias;
+    link.href=shortUrl(r.alias);
     link.target="_blank";
     link.rel="noopener noreferrer";
-    link.textContent=BASE+record.alias;
+    link.textContent=shortUrl(r.alias);
 
     const original=document.createElement("div");
-    original.className="original";
-    original.textContent=record.url;
+    original.className="url";
+    original.textContent=r.url;
 
-    info.append(title,document.createElement("br"),link,original);
+    const metadata=document.createElement("div");
+    metadata.className="small";
+    metadata.textContent=
+      (isActive(r)?"Active":"Inactive")+
+      " · "+(r.clicks||0)+" clicks"+
+      (r.passwordHash?" · Protected":"");
+
+    info.append(title,document.createElement("br"),link,original,metadata);
 
     const actions=document.createElement("div");
     actions.className="actions";
 
     actions.append(
-      button("Copy","secondary",async()=>{
+      makeButton("Copy","secondary",async()=>{
         try{
-          await navigator.clipboard.writeText(BASE+record.alias);
-          notice("Copied to clipboard.");
-        }catch{
-          notice("Unable to copy URL.",true);
-        }
+          await navigator.clipboard.writeText(shortUrl(r.alias));
+          notice("Copied!");
+        }catch{notice("Copy failed",true)}
       }),
-      button("Edit","secondary",()=>{
-        editing=record.alias;
-        $("alias").value=record.alias;
+      makeButton("QR","secondary",()=>showQR(r.alias)),
+      makeButton("Analytics","secondary",()=>showAnalytics(r)),
+      makeButton("Edit","secondary",()=>{
+        editing=r.alias;
+        $("alias").value=r.alias;
         $("alias").disabled=true;
-        $("destination").value=record.url;
-        $("linkTitle").value=record.title||"";
+        $("destination").value=r.url;
+        $("linkTitle").value=r.title||"";
+        $("enabled").checked=r.enabled!==false;
+        $("expires").value=dateInput(r.expiresAt);
+        $("password").value="";
+        $("removePasswordWrap").classList.toggle(
+          "hidden",!r.passwordHash
+        );
         $("formHeading").textContent="Edit Link";
         $("saveBtn").textContent="Save Changes";
         $("cancelBtn").classList.remove("hidden");
         window.scrollTo({top:0,behavior:"smooth"});
       }),
-      button("Delete","danger",async()=>{
-        if(!confirm("Delete "+record.alias+"?"))return;
-
+      makeButton("Delete","danger",async()=>{
+        if(!confirm("Delete "+r.alias+"?"))return;
         try{
-          await deleteDoc(doc(db,"links",record.alias));
-          if(editing===record.alias)resetForm();
+          await deleteDoc(doc(db,"links",r.alias));
+          if(editing===r.alias)resetForm();
           await loadLinks();
-          notice("Link deleted.");
-        }catch(error){
-          notice(error.message,true);
-        }
+          notice("Link deleted");
+        }catch(e){notice(e.message,true)}
       })
     );
 
-    row.append(info,actions);
-    container.append(row);
+    head.append(info,actions);
+    row.append(head);
+    list.append(row);
   }
 }
 
-$("cancelBtn").onclick=resetForm;
 $("search").oninput=render;
+
+function showQR(alias){
+  qrAlias=alias;
+  $("qrPanel").classList.remove("hidden");
+  $("qrUrl").textContent=shortUrl(alias);
+
+  if(typeof QRCode==="undefined"){
+    notice("QR library failed to load",true);
+    return;
+  }
+
+  QRCode.toCanvas(
+    $("qrCanvas"),shortUrl(alias),
+    {width:280,margin:2},
+    error=>{if(error)notice(error.message,true)}
+  );
+
+  $("qrPanel").scrollIntoView({behavior:"smooth"});
+}
+
+$("downloadQR").onclick=()=>{
+  if(!qrAlias)return;
+  const a=document.createElement("a");
+  a.download=qrAlias+"-qr.png";
+  a.href=$("qrCanvas").toDataURL("image/png");
+  a.click();
+};
+
+$("closeQR").onclick=()=>
+  $("qrPanel").classList.add("hidden");
+
+$("closeAnalytics").onclick=()=>
+  $("analyticsPanel").classList.add("hidden");
+
+function renderCounts(target,data){
+  const container=$(target);
+  container.replaceChildren();
+
+  const entries=Object.entries(data)
+    .sort((a,b)=>b[1]-a[1]);
+
+  if(!entries.length){
+    container.textContent="No analytics yet.";
+    return;
+  }
+
+  const table=document.createElement("table");
+  table.className="table";
+
+  for(const [name,count] of entries){
+    const tr=document.createElement("tr");
+    const label=document.createElement("td");
+    const value=document.createElement("td");
+    label.textContent=name;
+    value.textContent=count.toLocaleString();
+    tr.append(label,value);
+    table.append(tr);
+  }
+
+  container.append(table);
+}
+
+async function showAnalytics(record){
+  $("analyticsPanel").classList.remove("hidden");
+  $("analyticsHeading").textContent="Analytics: "+record.alias;
+  $("selectedClicks").textContent=(record.clicks||0).toLocaleString();
+
+  const panel=$("chart");
+  panel.textContent="Loading analytics...";
+
+  try{
+    const snap=await getDocs(
+      collection(db,"links",record.alias,"daily")
+    );
+
+    const days=new Map(
+      snap.docs.map(d=>[d.id,d.data()])
+    );
+
+    const today=new Date().toISOString().slice(0,10);
+    $("selectedToday").textContent=days.get(today)?.clicks||0;
+
+    const countryTotals={};
+    const deviceTotals={};
+
+    for(const d of days.values()){
+      for(const [k,v] of Object.entries(d.countries||{})){
+        countryTotals[k]=(countryTotals[k]||0)+v;
+      }
+      for(const [k,v] of Object.entries(d.devices||{})){
+        deviceTotals[k]=(deviceTotals[k]||0)+v;
+      }
+    }
+
+    renderCounts("countries",countryTotals);
+    renderCounts("devices",deviceTotals);
+
+    const last7=[];
+    for(let i=6;i>=0;i--){
+      const date=new Date();
+      date.setUTCHours(12,0,0,0);
+      date.setUTCDate(date.getUTCDate()-i);
+      const key=date.toISOString().slice(0,10);
+      last7.push({
+        key,
+        clicks:days.get(key)?.clicks||0
+      });
+    }
+
+    const max=Math.max(1,...last7.map(d=>d.clicks));
+    panel.replaceChildren();
+
+    for(const d of last7){
+      const col=document.createElement("div");
+      col.className="bar-col";
+
+      const count=document.createElement("span");
+      count.textContent=d.clicks;
+
+      const bar=document.createElement("div");
+      bar.className="bar";
+      bar.style.height=Math.max(2,d.clicks/max*115)+"px";
+
+      const label=document.createElement("span");
+      label.textContent=d.key.slice(5);
+
+      col.append(count,bar,label);
+      panel.append(col);
+    }
+
+    panel.scrollIntoView({behavior:"smooth"});
+  }catch(e){
+    panel.textContent="Unable to load analytics.";
+    notice(e.message,true);
+  }
+}
 </script>
 </body>
 </html>
