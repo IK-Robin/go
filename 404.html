@@ -5,20 +5,59 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
-<title>Redirect</title>
+<title>Loading...</title>
 
 <style>
-html, body {
+* {
+  box-sizing: border-box;
+}
+
+body {
   margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background: #ffffff;
+  color: #64748b;
+  font-family: Arial, sans-serif;
+}
+
+.loading {
+  text-align: center;
+}
+
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  margin: 0 auto 15px;
+  animation: spin .7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading p {
+  font-size: 14px;
+  margin: 0;
+}
+
+.error {
+  color: #dc2626;
 }
 </style>
 </head>
 
 <body>
+
+<div class="loading">
+  <div class="spinner" id="spinner"></div>
+  <p id="status">Loading...</p>
+</div>
 
 <script type="module">
 
@@ -32,83 +71,63 @@ import {
 } from
 "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
-// IMPORTANT: Absolute path from GitHub Pages root
+// Firebase config from GitHub repository root
 import { firebaseConfig } from "/go/firebase-config.js";
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+const status = document.getElementById("status");
+const spinner = document.getElementById("spinner");
+
+function showError(message) {
+  spinner.style.display = "none";
+  status.textContent = message;
+  status.classList.add("error");
+  document.title = "Link unavailable";
+}
+
 async function redirect() {
-
   try {
-
-    // Example:
-    // https://ik-robin.github.io/go/s/rvai1
-
+    const prefix = "/go/s/";
     const path = window.location.pathname;
 
-    const prefix = "/go/s/";
-
     if (!path.startsWith(prefix)) {
-      window.location.replace("/go/");
+      showError("Invalid short link.");
       return;
     }
 
-    // Get custom alias
     const alias = decodeURIComponent(
-      path.substring(prefix.length).replace(/\/$/, "")
+      path.slice(prefix.length).replace(/\/$/, "")
     );
 
-    // Validate alias
-    if (!/^[a-zA-Z0-9_-]{1,60}$/.test(alias)) {
-      window.location.replace("/go/");
+    if (!/^[A-Za-z0-9_-]{1,60}$/.test(alias)) {
+      showError("Invalid link alias.");
       return;
     }
 
-    console.log("Short URL alias:", alias);
-
-    // Fetch destination from Firestore
     const linkRef = doc(db, "links", alias);
-
     const snapshot = await getDoc(linkRef);
 
     if (!snapshot.exists()) {
-      console.error("Short URL not found:", alias);
-      window.location.replace("/go/");
+      showError("This short link was not found.");
       return;
     }
 
-    const data = snapshot.data();
+    const destination = snapshot.data().url;
+    const url = new URL(destination);
 
-    if (!data.url) {
-      console.error("Destination URL missing");
-      window.location.replace("/go/");
-      return;
+    if (!["http:", "https:"].includes(url.protocol)) {
+      throw new Error("Invalid destination");
     }
 
-    // Validate destination
-    const destination = new URL(data.url);
-
-    if (
-      destination.protocol !== "https:" &&
-      destination.protocol !== "http:"
-    ) {
-      throw new Error("Invalid destination URL");
-    }
-
-    // Direct redirect without intermediate UI
-    window.location.replace(destination.href);
+    // Automatically redirect in the same tab
+    window.location.replace(url.href);
 
   } catch (error) {
-
-    console.error("RobinLinks Redirect Error:", error);
-
-    // Fallback to dashboard
-    window.location.replace("/go/");
-
+    console.error("Redirect error:", error);
+    showError("Unable to open this link. Please try again.");
   }
-
 }
 
 redirect();
