@@ -2,225 +2,365 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0b1220">
-  <title>Link Shortener | Robin</title>
-  <style>
-    :root {
-      --bg: #0b1220;
-      --panel: #111c30;
-      --border: #26354d;
-      --text: #f0f5ff;
-      --muted: #98a9c3;
-      --primary: #38bdf8;
-      --success: #34d399;
-      --danger: #fb7185;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: system-ui, -apple-system, sans-serif;
-      line-height: 1.5;
-    }
-    .container {
-      max-width: 1080px;
-      margin: auto;
-      padding: 30px 18px;
-    }
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-      margin-bottom: 30px;
-    }
-    .logo {
-      font-size: 24px;
-      font-weight: 800;
-    }
-    .logo span { color: var(--primary); }
-    .badge {
-      padding: 6px 12px;
-      border: 1px solid var(--border);
-      border-radius: 30px;
-      color: var(--muted);
-      font-size: 12px;
-    }
-    .hero { margin-bottom: 26px; }
-    h1 { font-size: clamp(28px, 5vw, 42px); margin: 0 0 8px; }
-    h2 { font-size: 19px; margin: 0 0 18px; }
-    p { color: var(--muted); margin: 0; }
-    .card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 24px;
-      margin-bottom: 20px;
-    }
-    label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-    input {
-      width: 100%;
-      background: #0b1425;
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      color: white;
-      padding: 13px 14px;
-      font: inherit;
-      min-width: 0;
-    }
-    input:focus {
-      outline: 2px solid var(--primary);
-      outline-offset: 1px;
-    }
-    .field { margin-bottom: 18px; }
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-    }
-    button {
-      border: 0;
-      border-radius: 9px;
-      padding: 12px 18px;
-      cursor: pointer;
-      font: inherit;
-      font-weight: 700;
-    }
-    .primary { background: var(--primary); color: #06101c; }
-    .secondary { background: #24334b; color: white; }
-    .danger { background: #4c2435; color: #fecdd3; }
-    .actions {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .notice {
-      padding: 13px 15px;
-      border-radius: 9px;
-      margin-top: 16px;
-      background: #183448;
-      color: #b8e9ff;
-      overflow-wrap: anywhere;
-    }
-    .notice.error {
-      background: #482333;
-      color: #fecdd3;
-    }
-    .hidden { display: none; }
-    .toolbar {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-    }
-    .toolbar input { flex: 1; }
-    .link-list { display: grid; gap: 12px; }
-    .link-item {
-      padding: 16px;
-      background: #0b1425;
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-    .link-info { flex: 1; min-width: 200px; }
-    .short-link {
-      color: var(--primary);
-      font-weight: 700;
-      text-decoration: none;
-      overflow-wrap: anywhere;
-    }
-    .original {
-      font-size: 13px;
-      color: var(--muted);
-      margin-top: 5px;
-      overflow-wrap: anywhere;
-    }
-    .small { font-size: 12px; color: var(--muted); }
-    footer {
-      padding: 25px 0;
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-    }
-    @media (max-width: 650px) {
-      .grid { grid-template-columns: 1fr; gap: 0; }
-      .card { padding: 17px; }
-      .link-item { align-items: flex-start; }
-      .actions button { padding: 10px 13px; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RobinLinks — Admin</title>
+<style>
+:root {
+  color-scheme: dark;
+  --bg:#0b1220;
+  --panel:#142036;
+  --border:#2a3b54;
+  --text:#f1f5fb;
+  --muted:#a0aec3;
+  --accent:#38bdf8;
+}
+* {box-sizing:border-box}
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font:15px/1.5 system-ui,sans-serif;
+}
+main {max-width:960px;margin:auto;padding:28px 16px}
+header {
+  display:flex;align-items:center;
+  justify-content:space-between;gap:12px;
+  margin-bottom:28px;flex-wrap:wrap;
+}
+h1 {font-size:26px;margin:0}
+h1 span {color:var(--accent)}
+h2 {font-size:19px;margin:0 0 18px}
+p {color:var(--muted)}
+.card {
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:15px;
+  padding:22px;margin-bottom:20px;
+}
+label {display:block;margin:0 0 7px;font-weight:600}
+input {
+  display:block;width:100%;
+  padding:12px;background:#0b1526;
+  border:1px solid var(--border);
+  border-radius:9px;color:white;
+  font:inherit;min-width:0;
+}
+input:focus {outline:2px solid var(--accent)}
+.field {margin-bottom:17px}
+.grid {display:grid;grid-template-columns:1fr 1fr;gap:15px}
+button {
+  border:0;border-radius:9px;
+  padding:11px 16px;cursor:pointer;
+  font:inherit;font-weight:650;
+}
+.primary {background:var(--accent);color:#061320}
+.secondary {background:#2b3d56;color:white}
+.danger {background:#542737;color:#ffd5dc}
+.actions {display:flex;gap:8px;flex-wrap:wrap}
+.row {
+  display:flex;align-items:center;
+  justify-content:space-between;gap:12px;
+  padding:16px 0;border-bottom:1px solid var(--border);
+  flex-wrap:wrap;
+}
+.row:last-child {border-bottom:0}
+.details {flex:1;min-width:200px;overflow-wrap:anywhere}
+.details a {color:var(--accent);font-weight:700}
+.small {font-size:12px;color:var(--muted)}
+.hidden {display:none!important}
+#message {margin:12px 0;color:#86efac;overflow-wrap:anywhere}
+#error {color:#fda4af}
+#search {margin-bottom:12px}
+@media(max-width:600px) {
+  .grid {grid-template-columns:1fr;gap:0}
+  .card {padding:16px}
+}
+</style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <div class="logo">Robin<span>Links.</span></div>
-      <div class="badge">GitHub Pages Edition</div>
-    </header>
+<main>
+<header>
+  <h1>Robin<span>Links</span></h1>
+  <button id="logout" class="secondary hidden">Logout</button>
+</header>
 
-    <section class="hero">
-      <h1>Short links, made simple.</h1>
-      <p>Create custom short URLs and manage them from one place.</p>
-    </section>
+<section id="loginPanel" class="card">
+  <h2>Admin Login</h2>
+  <form id="loginForm">
+    <div class="field">
+      <label>Email</label>
+      <input id="email" type="email" required>
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input id="password" type="password" required>
+    </div>
+    <button class="primary">Sign In</button>
+  </form>
+</section>
 
-    <section class="card">
-      <h2>Create a short link</h2>
-      <form id="linkForm">
-        <div class="field">
-          <label for="longUrl">Destination URL</label>
-          <input id="longUrl" type="url"
-            placeholder="https://example.com/very-long-url"
-            required>
-        </div>
-        <div class="grid">
-          <div class="field">
-            <label for="alias">Custom alias (optional)</label>
-            <input id="alias" type="text"
-              placeholder="my-link" maxlength="60"
-              pattern="[A-Za-z0-9_-]+">
-          </div>
-          <div class="field">
-            <label for="linkTitle">Link title (optional)</label>
-            <input id="linkTitle" type="text"
-              placeholder="My website" maxlength="100">
-          </div>
-        </div>
-        <button class="primary" type="submit">Create Short Link</button>
-      </form>
-      <div id="result" class="notice hidden" role="status"></div>
-    </section>
-
-    <section class="card">
-      <h2>Manage your links</h2>
-      <div class="toolbar">
-        <input id="search" type="search"
-          placeholder="Search by title, alias or URL..."
-          aria-label="Search links">
-        <button id="exportBtn" class="primary" type="button">
-          Export JSON
-        </button>
+<div id="dashboard" class="hidden">
+  <section class="card">
+    <h2 id="formTitle">Create Short Link</h2>
+    <form id="linkForm">
+      <div class="field">
+        <label>Destination URL</label>
+        <input id="destination" type="url"
+          placeholder="https://example.com/page"
+          required>
       </div>
-      <div id="linkList" class="link-list"></div>
-      <p class="small" style="margin-top:18px">
-        Changes are saved in this browser first. Export links.json
-        and commit it to GitHub to publish your changes.
-      </p>
-    </section>
+      <div class="grid">
+        <div class="field">
+          <label>Custom Alias</label>
+          <input id="alias"
+            placeholder="rvai"
+            pattern="[A-Za-z0-9_-]{1,60}"
+            maxlength="60" required>
+        </div>
+        <div class="field">
+          <label>Title</label>
+          <input id="title" maxlength="100"
+            placeholder="RV AI Demo">
+        </div>
+      </div>
+      <div class="actions">
+        <button class="primary" id="saveBtn">Save Link</button>
+        <button type="button" id="cancelBtn"
+          class="secondary hidden">Cancel Edit</button>
+      </div>
+    </form>
+    <div id="message" role="status"></div>
+  </section>
 
-    <footer>RobinLinks — Free static URL shortener</footer>
-  </div>
-  <script src="app.js"></script>
+  <section class="card">
+    <h2>Manage Links</h2>
+    <input id="search" type="search"
+      placeholder="Search links...">
+    <div id="links"></div>
+  </section>
+</div>
+<p id="error" role="alert"></p>
+</main>
+
+<script type="module">
+import {initializeApp} from
+  "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+
+import {
+  getFirestore,collection,doc,
+  getDocs,setDoc,updateDoc,deleteDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+import {firebaseConfig} from "./firebase-config.js";
+
+const app=initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getFirestore(app);
+const collectionRef=collection(db,"links");
+const $=id=>document.getElementById(id);
+const BASE="https://ik-robin.github.io/go/s/";
+
+let records=[];
+let editing=null;
+
+function validUrl(value) {
+  try {
+    const url=new URL(value);
+    return ["http:","https:"].includes(url.protocol);
+  } catch {return false}
+}
+
+function notify(text,isError=false) {
+  $(isError?"error":"message").textContent=text;
+  if(isError) $("message").textContent="";
+  else $("error").textContent="";
+}
+
+function resetForm() {
+  editing=null;
+  $("linkForm").reset();
+  $("alias").disabled=false;
+  $("formTitle").textContent="Create Short Link";
+  $("cancelBtn").classList.add("hidden");
+}
+
+$("loginForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  try {
+    await signInWithEmailAndPassword(
+      auth,$("email").value,$("password").value
+    );
+    $("password").value="";
+  } catch(error) {
+    notify(error.message,true);
+  }
+});
+
+$("logout").onclick=()=>signOut(auth);
+$("cancelBtn").onclick=resetForm;
+
+onAuthStateChanged(auth,async user=>{
+  $("loginPanel").classList.toggle("hidden",!!user);
+  $("dashboard").classList.toggle("hidden",!user);
+  $("logout").classList.toggle("hidden",!user);
+  records=[];
+  if(user) await loadLinks();
+});
+
+async function loadLinks() {
+  try {
+    const snapshot=await getDocs(collectionRef);
+    records=snapshot.docs.map(d=>({
+      alias:d.id,...d.data()
+    }));
+    render();
+  } catch(error) {
+    notify("Unable to load links: "+error.message,true);
+  }
+}
+
+$("linkForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+
+  const alias=$("alias").value.trim();
+  const url=$("destination").value.trim();
+  const title=$("title").value.trim();
+
+  if(!/^[A-Za-z0-9_-]{1,60}$/.test(alias) ||
+     !validUrl(url)) {
+    notify("Enter a valid alias and HTTP/HTTPS URL.",true);
+    return;
+  }
+
+  const button=$("saveBtn");
+  button.disabled=true;
+
+  try {
+    const ref=doc(db,"links",alias);
+
+    if(editing) {
+      await updateDoc(ref,{
+        url,title,updatedAt:serverTimestamp()
+      });
+    } else {
+      // This check is convenient for the dashboard.
+      // Firestore rules also prevent overwriting existing aliases.
+      const exists=records.some(r=>r.alias===alias);
+      if(exists) throw new Error("Alias already exists.");
+
+      await setDoc(ref,{
+        url,title,createdAt:serverTimestamp()
+      });
+    }
+
+    resetForm();
+    await loadLinks();
+    notify("Link saved! "+BASE+alias);
+  } catch(error) {
+    notify(error.message,true);
+  } finally {
+    button.disabled=false;
+  }
+});
+
+function makeButton(label,css,callback) {
+  const b=document.createElement("button");
+  b.type="button";
+  b.className=css;
+  b.textContent=label;
+  b.onclick=callback;
+  return b;
+}
+
+function render() {
+  const query=$("search").value.toLowerCase();
+  const container=$("links");
+  container.replaceChildren();
+
+  const filtered=records.filter(r=>
+    [r.alias,r.url,r.title||""]
+      .some(v=>v.toLowerCase().includes(query))
+  );
+
+  if(!filtered.length) {
+    const p=document.createElement("p");
+    p.textContent="No links found.";
+    container.append(p);
+    return;
+  }
+
+  for(const record of filtered) {
+    const row=document.createElement("div");
+    row.className="row";
+
+    const details=document.createElement("div");
+    details.className="details";
+
+    const a=document.createElement("a");
+    a.href=BASE+record.alias;
+    a.target="_blank";
+    a.rel="noopener noreferrer";
+    a.textContent=BASE+record.alias;
+
+    const title=document.createElement("div");
+    title.textContent=record.title||record.alias;
+
+    const original=document.createElement("div");
+    original.className="small";
+    original.textContent=record.url;
+
+    details.append(title,a,original);
+
+    const actions=document.createElement("div");
+    actions.className="actions";
+
+    actions.append(
+      makeButton("Copy","secondary",async()=>{
+        try {
+          await navigator.clipboard.writeText(BASE+record.alias);
+          notify("Copied!");
+        } catch {
+          notify("Unable to copy link.",true);
+        }
+      }),
+      makeButton("Edit","secondary",()=>{
+        editing=record.alias;
+        $("alias").value=record.alias;
+        $("alias").disabled=true;
+        $("destination").value=record.url;
+        $("title").value=record.title||"";
+        $("formTitle").textContent="Edit Short Link";
+        $("cancelBtn").classList.remove("hidden");
+        window.scrollTo({top:0,behavior:"smooth"});
+      }),
+      makeButton("Delete","danger",async()=>{
+        if(!confirm("Delete "+record.alias+"?")) return;
+        try {
+          await deleteDoc(doc(db,"links",record.alias));
+          if(editing===record.alias) resetForm();
+          await loadLinks();
+          notify("Link deleted.");
+        } catch(error) {
+          notify(error.message,true);
+        }
+      })
+    );
+
+    row.append(details,actions);
+    container.append(row);
+  }
+}
+
+$("search").addEventListener("input",render);
+</script>
 </body>
 </html>
