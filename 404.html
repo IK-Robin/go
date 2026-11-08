@@ -3,136 +3,140 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex">
 <title>Loading...</title>
-
 <style>
-* {
-  box-sizing: border-box;
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;display:flex;
+  align-items:center;justify-content:center;
+  background:#fff;color:#64748b;
+  font:15px/1.5 system-ui,sans-serif;
+  padding:20px
 }
-
-body {
-  margin: 0;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #ffffff;
-  color: #64748b;
-  font-family: Arial, sans-serif;
+.box{text-align:center;width:100%;max-width:350px}
+.spinner{
+  width:32px;height:32px;border:3px solid #e2e8f0;
+  border-top-color:#2563eb;border-radius:50%;
+  margin:0 auto 16px;animation:spin .7s linear infinite
 }
-
-.loading {
-  text-align: center;
+@keyframes spin{to{transform:rotate(360deg)}}
+input{
+  width:100%;padding:12px;border:1px solid #cbd5e1;
+  border-radius:8px;margin:12px 0;font:inherit
 }
-
-.spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid #e2e8f0;
-  border-top-color: #2563eb;
-  border-radius: 50%;
-  margin: 0 auto 15px;
-  animation: spin .7s linear infinite;
+button{
+  background:#2563eb;color:white;border:0;
+  border-radius:8px;padding:12px 18px;
+  cursor:pointer;width:100%;font:inherit
 }
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.loading p {
-  font-size: 14px;
-  margin: 0;
-}
-
-.error {
-  color: #dc2626;
-}
+button:disabled{opacity:.6}
+.hidden{display:none}
+.error{color:#dc2626}
 </style>
 </head>
-
 <body>
-
-<div class="loading">
-  <div class="spinner" id="spinner"></div>
+<div class="box">
+  <div id="spinner" class="spinner"></div>
   <p id="status">Loading...</p>
+
+  <form id="passwordForm" class="hidden">
+    <h2>Protected Link</h2>
+    <p>Enter the password to continue.</p>
+    <input id="password" type="password"
+      placeholder="Link password" required>
+    <button id="unlockBtn" type="submit">Continue</button>
+  </form>
 </div>
 
-<script type="module">
+<script>
+const FUNCTION_BASE =
+  "https://asia-southeast1-YOUR_PROJECT_ID.cloudfunctions.net";
 
-import { initializeApp } from
-"https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+const $=id=>document.getElementById(id);
 
-import {
-  getFirestore,
-  doc,
-  getDoc
-} from
-"https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
-
-// Firebase config from GitHub repository root
-import { firebaseConfig } from "/go/firebase-config.js";
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-const status = document.getElementById("status");
-const spinner = document.getElementById("spinner");
-
-function showError(message) {
-  spinner.style.display = "none";
-  status.textContent = message;
-  status.classList.add("error");
-  document.title = "Link unavailable";
+function fail(message){
+  $("spinner").classList.add("hidden");
+  $("status").textContent=message;
+  $("status").classList.add("error");
+  document.title="Link unavailable";
 }
 
-async function redirect() {
-  try {
-    const prefix = "/go/s/";
-    const path = window.location.pathname;
+const prefix="/go/s/";
+const path=location.pathname;
 
-    if (!path.startsWith(prefix)) {
-      showError("Invalid short link.");
-      return;
-    }
+let alias="";
 
-    const alias = decodeURIComponent(
-      path.slice(prefix.length).replace(/\/$/, "")
+try{
+  if(!path.startsWith(prefix))throw Error("Invalid link");
+  alias=decodeURIComponent(
+    path.slice(prefix.length).replace(/\/$/,"")
+  );
+  if(!/^[A-Za-z0-9_-]{1,60}$/.test(alias)){
+    throw Error("Invalid alias");
+  }
+}catch(e){
+  fail(e.message);
+}
+
+async function resolve(password=""){
+  if(!alias)return;
+
+  $("status").textContent="Loading...";
+  $("status").classList.remove("error");
+
+  try{
+    const response=await fetch(
+      FUNCTION_BASE+"/resolveLink",
+      {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({alias,password})
+      }
     );
 
-    if (!/^[A-Za-z0-9_-]{1,60}$/.test(alias)) {
-      showError("Invalid link alias.");
+    const data=await response.json();
+
+    if(!response.ok){
+      throw Error(data.error||"Unable to open link");
+    }
+
+    if(data.passwordRequired){
+      $("spinner").classList.add("hidden");
+      $("status").textContent="";
+      $("passwordForm").classList.remove("hidden");
+      document.title="Protected Link";
       return;
     }
 
-    const linkRef = doc(db, "links", alias);
-    const snapshot = await getDoc(linkRef);
+    const destination=new URL(data.destination);
 
-    if (!snapshot.exists()) {
-      showError("This short link was not found.");
-      return;
+    if(!["http:","https:"].includes(destination.protocol)){
+      throw Error("Invalid destination");
     }
 
-    const destination = snapshot.data().url;
-    const url = new URL(destination);
+    window.location.replace(destination.href);
 
-    if (!["http:", "https:"].includes(url.protocol)) {
-      throw new Error("Invalid destination");
+  }catch(e){
+    fail(e.message);
+    if(!$("passwordForm").classList.contains("hidden")){
+      $("status").textContent=e.message;
     }
-
-    // Automatically redirect in the same tab
-    window.location.replace(url.href);
-
-  } catch (error) {
-    console.error("Redirect error:", error);
-    showError("Unable to open this link. Please try again.");
   }
 }
 
-redirect();
+$("passwordForm").onsubmit=async e=>{
+  e.preventDefault();
+  $("unlockBtn").disabled=true;
+  try{
+    await resolve($("password").value);
+  }finally{
+    $("unlockBtn").disabled=false;
+  }
+};
 
+resolve();
 </script>
-
 </body>
 </html>
