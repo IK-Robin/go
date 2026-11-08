@@ -1,0 +1,226 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1220">
+  <title>Link Shortener | Robin</title>
+  <style>
+    :root {
+      --bg: #0b1220;
+      --panel: #111c30;
+      --border: #26354d;
+      --text: #f0f5ff;
+      --muted: #98a9c3;
+      --primary: #38bdf8;
+      --success: #34d399;
+      --danger: #fb7185;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 1080px;
+      margin: auto;
+      padding: 30px 18px;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+    }
+    .logo span { color: var(--primary); }
+    .badge {
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .hero { margin-bottom: 26px; }
+    h1 { font-size: clamp(28px, 5vw, 42px); margin: 0 0 8px; }
+    h2 { font-size: 19px; margin: 0 0 18px; }
+    p { color: var(--muted); margin: 0; }
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    input {
+      width: 100%;
+      background: #0b1425;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      color: white;
+      padding: 13px 14px;
+      font: inherit;
+      min-width: 0;
+    }
+    input:focus {
+      outline: 2px solid var(--primary);
+      outline-offset: 1px;
+    }
+    .field { margin-bottom: 18px; }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    button {
+      border: 0;
+      border-radius: 9px;
+      padding: 12px 18px;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+    }
+    .primary { background: var(--primary); color: #06101c; }
+    .secondary { background: #24334b; color: white; }
+    .danger { background: #4c2435; color: #fecdd3; }
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .notice {
+      padding: 13px 15px;
+      border-radius: 9px;
+      margin-top: 16px;
+      background: #183448;
+      color: #b8e9ff;
+      overflow-wrap: anywhere;
+    }
+    .notice.error {
+      background: #482333;
+      color: #fecdd3;
+    }
+    .hidden { display: none; }
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .toolbar input { flex: 1; }
+    .link-list { display: grid; gap: 12px; }
+    .link-item {
+      padding: 16px;
+      background: #0b1425;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .link-info { flex: 1; min-width: 200px; }
+    .short-link {
+      color: var(--primary);
+      font-weight: 700;
+      text-decoration: none;
+      overflow-wrap: anywhere;
+    }
+    .original {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 5px;
+      overflow-wrap: anywhere;
+    }
+    .small { font-size: 12px; color: var(--muted); }
+    footer {
+      padding: 25px 0;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    @media (max-width: 650px) {
+      .grid { grid-template-columns: 1fr; gap: 0; }
+      .card { padding: 17px; }
+      .link-item { align-items: flex-start; }
+      .actions button { padding: 10px 13px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">Robin<span>Links.</span></div>
+      <div class="badge">GitHub Pages Edition</div>
+    </header>
+
+    <section class="hero">
+      <h1>Short links, made simple.</h1>
+      <p>Create custom short URLs and manage them from one place.</p>
+    </section>
+
+    <section class="card">
+      <h2>Create a short link</h2>
+      <form id="linkForm">
+        <div class="field">
+          <label for="longUrl">Destination URL</label>
+          <input id="longUrl" type="url"
+            placeholder="https://example.com/very-long-url"
+            required>
+        </div>
+        <div class="grid">
+          <div class="field">
+            <label for="alias">Custom alias (optional)</label>
+            <input id="alias" type="text"
+              placeholder="my-link" maxlength="60"
+              pattern="[A-Za-z0-9_-]+">
+          </div>
+          <div class="field">
+            <label for="linkTitle">Link title (optional)</label>
+            <input id="linkTitle" type="text"
+              placeholder="My website" maxlength="100">
+          </div>
+        </div>
+        <button class="primary" type="submit">Create Short Link</button>
+      </form>
+      <div id="result" class="notice hidden" role="status"></div>
+    </section>
+
+    <section class="card">
+      <h2>Manage your links</h2>
+      <div class="toolbar">
+        <input id="search" type="search"
+          placeholder="Search by title, alias or URL..."
+          aria-label="Search links">
+        <button id="exportBtn" class="primary" type="button">
+          Export JSON
+        </button>
+      </div>
+      <div id="linkList" class="link-list"></div>
+      <p class="small" style="margin-top:18px">
+        Changes are saved in this browser first. Export links.json
+        and commit it to GitHub to publish your changes.
+      </p>
+    </section>
+
+    <footer>RobinLinks — Free static URL shortener</footer>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
