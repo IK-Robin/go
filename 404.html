@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Redirecting...</title>
+  <style>
+    body {
+      background: #0b1220;
+      color: #f0f5ff;
+      font-family: system-ui, sans-serif;
+      display: grid;
+      place-items: center;
+      min-height: 100vh;
+      margin: 0;
+      text-align: center;
+      padding: 20px;
+    }
+    a { color: #38bdf8; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1 id="status">Finding your link...</h1>
+    <p id="message">Please wait.</p>
+    <p><a id="home" href="/">Back to homepage</a></p>
+  </main>
+
+  <script>
+    (async function () {
+      const status = document.getElementById("status");
+      const message = document.getElementById("message");
+      const home = document.getElementById("home");
+
+      const path = window.location.pathname;
+      const marker = "/s/";
+      const markerIndex = path.lastIndexOf(marker);
+
+      function fail(text) {
+        status.textContent = "Link not found";
+        message.textContent = text;
+      }
+
+      if (markerIndex === -1) {
+        fail("This page does not exist.");
+        return;
+      }
+
+      const basePath = path.slice(0, markerIndex + 1);
+      home.href = basePath;
+
+      let alias;
+
+      try {
+        alias = decodeURIComponent(
+          path.slice(markerIndex + marker.length).replace(/\/$/, "")
+        );
+      } catch {
+        fail("Invalid link alias.");
+        return;
+      }
+
+      if (!/^[A-Za-z0-9_-]{1,60}$/.test(alias)) {
+        fail("Invalid link alias.");
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          basePath + "links.json?version=" + Date.now(),
+          { cache: "no-store" }
+        );
+
+        if (!response.ok) throw new Error("Links unavailable");
+
+        const links = await response.json();
+
+        if (!Object.prototype.hasOwnProperty.call(links, alias)) {
+          fail("This short link has not been published.");
+          return;
+        }
+
+        const record = links[alias];
+        const destination = typeof record === "string"
+          ? record
+          : record && record.url;
+
+        if (typeof destination !== "string") {
+          fail("Invalid destination.");
+          return;
+        }
+
+        const url = new URL(destination);
+
+        if (!["http:", "https:"].includes(url.protocol)) {
+          fail("Unsupported destination.");
+          return;
+        }
+
+        status.textContent = "Redirecting...";
+        message.textContent = "Opening your destination.";
+        window.location.replace(url.href);
+
+      } catch (error) {
+        fail("Unable to load the destination. Please try again.");
+      }
+    })();
+  </script>
+</body>
+</html>
